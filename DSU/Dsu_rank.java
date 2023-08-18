@@ -5,11 +5,13 @@ import java.util.*;
 class DisjointSet {
     int[] parent;
     int[] rank;
+    int[] size;
 
     public DisjointSet(int n) {
         // initial config rank->0 , parent -> i
-        parent = rank = new int[n + 1];
+        parent = rank = size = new int[n + 1];
         Arrays.fill(rank, 0);
+        Arrays.fill(size, 1);
 
         for (int i = 0; i <= n; i++)
             parent[i] = i;
@@ -29,6 +31,7 @@ class DisjointSet {
     }
 
     public void unionByRank(int u, int v) {
+
         int ulp_u = findUPar(u);
         int ulp_v = findUPar(v);
 
@@ -54,6 +57,30 @@ class DisjointSet {
              */
             parent[ulp_v] = ulp_u;
             rank[ulp_u]++;
+        }
+    }
+
+    public void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+
+        if (ulp_u == ulp_v)
+            return;
+
+        if (size[ulp_u] < size[ulp_v]) {
+            /*
+             * v
+             * u
+             */
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        } else {
+            /*
+             * u
+             * v
+             */
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
         }
     }
 }
